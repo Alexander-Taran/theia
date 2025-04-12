@@ -16,12 +16,13 @@
 
 import { Key, KeyCode } from '@theia/core/lib/browser';
 import * as React from '@theia/core/shared/react';
-import TextareaAutosize from 'react-textarea-autosize';
+// import TextareaAutosize from 'react-textarea-autosize';
 import debounce = require('@theia/core/shared/lodash.debounce');
 
 interface HistoryState {
     history: string[];
     index: number;
+    qq?: string
 };
 type TextareaAttributes = Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'>;
 
@@ -35,6 +36,7 @@ export class SearchInWorkspaceTextArea extends React.Component<TextareaAttribute
         this.state = {
             history: [],
             index: 0,
+            qq: ''
         };
     }
 
@@ -115,6 +117,7 @@ export class SearchInWorkspaceTextArea extends React.Component<TextareaAttribute
     protected readonly onChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
         this.addToHistory();
         this.props.onChange?.(e);
+        this.setState({ qq: e.target.value });
     };
 
     /**
@@ -136,18 +139,20 @@ export class SearchInWorkspaceTextArea extends React.Component<TextareaAttribute
     override render(): React.ReactNode {
         const { onResize, ...filteredProps } = this.props;
         return (
-            <TextareaAutosize
-                {...filteredProps}
-                autoCapitalize="off"
-                autoCorrect="off"
-                maxRows={7} /* from VS Code */
-                onChange={this.onChange}
-                onKeyDown={this.onKeyDown}
-                ref={this.textarea}
-                rows={1}
-                spellCheck={false}
-            >
-            </TextareaAutosize>
+            <div className='input-sizer' data-value={this.state.qq}>
+                <textarea
+                    {...filteredProps}
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    // maxRows={7} /* from VS Code */
+                    onChange={this.onChange}
+                    onKeyDown={this.onKeyDown}
+                    ref={this.textarea}
+                    rows={1}
+                    spellCheck={false}
+                >
+                </textarea>
+            </div>
         );
     }
 }
